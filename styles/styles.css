@@ -235,7 +235,6 @@ textarea {
   left: 0;
 }
 
-/* ---------------------------------- */
 :root {
   --primaryColor: #ca8300;
   --mainWhite: #fff;
@@ -260,6 +259,7 @@ body {
   font-family: 'Montserrat', sans-serif;
 }
 
+/* --------------- Page Wrapper ---------------- */
 .wrapper {
   width: 100%;
   max-width: --mainWrapper;
@@ -376,7 +376,7 @@ body {
 .sectionTitle h2 {
   text-align: center;
   font-size: 1.75rem;
-  margin-bottom: 2.5rem;
+  margin: 2.5rem 0;
   text-transform: capitalize;
   letter-spacing: var(--mainSpacing);
 }
