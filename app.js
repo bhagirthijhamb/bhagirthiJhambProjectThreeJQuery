@@ -1,12 +1,25 @@
 const storeApp = {};
 
-const cart = [];
+// Cart
+let cart = [];
 
+// Buttons
+let buttonsDOM = [];
+
+// Variables
 const $productsDOM = $('.productsCenter');
+const $cartTotal = $('.cartTotal');
+const $cartItems = $('.cartItems');
+const $cartBtn = $('.cartBtn');
+const $closeCartBtn = $('.closeCart');
+const $clearCartBtn = $('.clearCart');
+const $cartDOM = $('.cart');
+const $cartOverlay = $('.cartOverlay');
+const $cartContent = $('.cartContent');
 
 storeApp.Inventory = [
     {
-        id: 1,
+        id: '1',
         title: "Brown Leather bag",
         price: 69.99,
         url: "./images/item1.jpeg"
@@ -85,7 +98,7 @@ storeApp.Inventory = [
     }
 ]
 
-storeApp.displayInventory = (inventory) =>  {
+storeApp.displayProducts = (inventory) =>  {
     let result = '';
     inventory.forEach((item) => {
         result += `
@@ -93,7 +106,7 @@ storeApp.displayInventory = (inventory) =>  {
         <article class="product">
         <div class="imgContainer">
             <img src=${item.url} alt=${item.title} class="productImg">
-            <button class="bagBtn">
+            <button class="bagBtn" data-id=${item.id}>
                 <i class="fas fa-shopping-cart">Add to cart</i>
             </button>
         </div>
@@ -106,32 +119,77 @@ storeApp.displayInventory = (inventory) =>  {
     $productsDOM.html(result);
 }
 
-// Save cart
-storeApp.saveCart = (cart) => {
-    localStorage.setItem('cart', JSON.stringify(cart));
-}
+// Get Add to Cart Buttons
+storeApp.getAddToCartButtons = () => {
+    const buttons = [...$('.bagBtn')]; // Arrau of all the buttons
+    // console.log(buttons);
 
+    //  get id for the buttons
+    buttons.forEach(button => {
+        let id = button.dataset.id;
+        
+        // check for the item in the cart
+        let inCart = cart.find(item => item.id === id);
+        let cartItem;
+        if(!inCart){
+            button.addEventListener('click', (event) => {
+
+                // get product from the inventory based on id
+                // let cartItem = storeApp.getProduct(id);
+                cartItem = { ...storeApp.getProduct(id), amount: 1 };
+                console.log(cartItem);
+
+                // Add product to the cart
+                cart = [...cart, cartItem];
+                console.log(cart);
+
+                // Save cart in local storage
+                storeApp.saveCart(cart);
+
+            
+            })            
+        } else {
+        cartItem.amount = cartItem.amount + 1; 
+        }       
+    })
+}
+  
+    
 // Add to cart
 storeApp.addToCart = () => {
     for (let item in cart) {
         if (cart[item].name === name) {
             cart[item].count++;
-            saveCart();
-            return;
+        saveCart();
+        return;
         }
     }
     var item = new Item(name, price, count);
     cart.push(item);
-    saveCart();
+    saveCart();    
+}
 
+// Save cart
+storeApp.saveCart = (cart) => {
+    localStorage.setItem('cart', JSON.stringify(cart));
 }
 
 
-storeApp.init = () => {
-    storeApp.displayInventory(storeApp.Inventory);
+
+// Get the products from Inventory
+storeApp.getProduct = (id) => {
+     return storeApp.Inventory.find(function(item){
+        if(item.id == id){
+            return item;
+        }
+    } );
+}
+
+storeApp.init = () => {    
+    storeApp.displayProducts(storeApp.Inventory);
+    storeApp.getAddToCartButtons();
 }
 
 $(function(){
-    console.log('hello');
     storeApp.init();
 }); 
