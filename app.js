@@ -19,7 +19,7 @@ const $cartContent = $('.cartContent');
 
 storeApp.Inventory = [
     {
-        id: '1',
+        id: 1,
         title: "Brown Leather bag",
         price: 69.99,
         url: "./images/item1.jpeg"
@@ -38,10 +38,10 @@ storeApp.Inventory = [
     },
     {
         id: 4,
-        title: "Denim Jacket",
-        price: 10.99,
-        url: "./images/item4.jpeg"
-    },
+        title: "Reversible Jacket",
+        price: 39.99,
+        url: "./images/item7.jpeg"
+    },    
     {
         id: 5,
         title: "Striped top",
@@ -56,10 +56,10 @@ storeApp.Inventory = [
     },
     {
         id: 7,
-        title: "Reversible Jacket",
-        price: 39.99,
-        url: "./images/item7.jpeg"
-    },
+        title: "Denim Jacket",
+        price: 10.99,
+        url: "./images/item4.jpeg"
+    },    
     {
         id: 8,
         title: "Men Cool Tee",
@@ -102,19 +102,20 @@ storeApp.displayProducts = (inventory) =>  {
     let result = '';
     inventory.forEach((item) => {
         result += `
-        <!-- single product -->
-        <article class="product">
-        <div class="imgContainer">
-            <img src=${item.url} alt=${item.title} class="productImg">
-            <button class="bagBtn" data-id=${item.id}>
-                <i class="fas fa-shopping-cart">Add to cart</i>
-            </button>
-        </div>
-        <h3>${item.title}</h3>
-        <h4>$${item.price}</h4>
-        </article>
-        <!-- end of single product -->
-    `});
+            <!-- single product -->
+            <article class="product">
+            <div class="imgContainer">
+                <img src=${item.url} alt=${item.title.split(' ').join('-')} class="productImg">
+                <button class="bagBtn" data-id=${item.id}>
+                    <i class="fas fa-shopping-cart">Add to cart</i>
+                </button>
+            </div>
+            <h3>${item.title}</h3>
+            <h4>$${item.price}</h4>
+            </article>
+            <!-- end of single product -->
+        `;
+    });
 
     $productsDOM.html(result);
 }
@@ -130,59 +131,36 @@ storeApp.getAddToCartButtons = () => {
         
         // check for the item in the cart
         let inCart = cart.find(item => item.id === id);
-        let cartItem;
         if(!inCart){
             button.addEventListener('click', (event) => {
+                $(event.target).text('In Cart');
+                event.target.disabled = true;
 
                 // get product from the inventory based on id
-                // let cartItem = storeApp.getProduct(id);
+                let cartItem = storeApp.getProduct(id);
                 cartItem = { ...storeApp.getProduct(id), amount: 1 };
                 console.log(cartItem);
 
-                // Add product to the cart
-                cart = [...cart, cartItem];
-                console.log(cart);
+                // Add product to the cart                
 
-                // Save cart in local storage
-                storeApp.saveCart(cart);
+                // Save cart in local storage                
 
                 // Set cart Values
-                storeApp.setCartValues(cart);
+                
+                // display cart item
 
-            
+                // show the cart            
             })            
         } else {
-        cartItem.amount = cartItem.amount + 1; 
+        // cartItem.amount = cartItem.amount + 1; 
         }       
     })
 }
-  
-    
-// Add to cart
-storeApp.addToCart = () => {
-    for (let item in cart) {
-        if (cart[item].name === name) {
-            cart[item].count++;
-        saveCart();
-        return;
-        }
-    }
-    var item = new Item(name, price, count);
-    cart.push(item);
-    saveCart();    
-}
-
-// Save cart
-storeApp.saveCart = (cart) => {
-    localStorage.setItem('cart', JSON.stringify(cart));
-}
-
-
 
 // Get the products from Inventory
 storeApp.getProduct = (id) => {
-     return storeApp.Inventory.find(function(item){
-        if(item.id == id){
+    return storeApp.Inventory.find(function(item){
+        if(item.id === Number(id)){
             return item;
         }
     } );
