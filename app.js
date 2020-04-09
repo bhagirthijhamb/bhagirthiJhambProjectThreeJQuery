@@ -141,7 +141,9 @@ storeApp.getAddToCartButtons = () => {
                 cartItem = { ...storeApp.getProduct(id), amount: 1 };
                 console.log(cartItem);
 
-                // Add product to the cart                
+                // Add product to the cart  
+                cart = [...cart, cartItem];
+                console.log(cart);
 
                 // Save cart in local storage                
 
