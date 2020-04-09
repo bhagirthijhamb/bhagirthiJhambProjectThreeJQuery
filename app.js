@@ -38,7 +38,7 @@ storeApp.Inventory = [
     },
     {
         id: 4,
-        title: "queen panel bed",
+        title: "Denim Jacket",
         price: 10.99,
         url: "./images/item4.jpeg"
     },
@@ -145,6 +145,9 @@ storeApp.getAddToCartButtons = () => {
 
                 // Save cart in local storage
                 storeApp.saveCart(cart);
+
+                // Set cart Values
+                storeApp.setCartValues(cart);
 
             
             })            

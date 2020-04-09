@@ -39,7 +39,6 @@ a,abbr,acronym,address,applet,article,aside,audio,b,big,blockquote,body,canvas,c
 html {
     font-size: 125%;
     font-family: 'Montserrat';
-    /* text-transform: uppercase; */
 }
 
 body {
@@ -48,4 +47,8 @@ body {
     color: var(--mainBlack);
     background: var(--mainWhite);
     font-family: 'Montserrat', sans-serif;
+}
+
+h1, h2, h3 {
+  text-transform: uppercase;
 }
