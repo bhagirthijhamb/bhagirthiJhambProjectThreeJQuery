@@ -145,7 +145,8 @@ storeApp.getAddToCartButtons = () => {
                 cart = [...cart, cartItem];
                 console.log(cart);
 
-                // Save cart in local storage                
+                // Save cart in local storage   
+                storeApp.saveCart(cart);             
 
                 // Set cart Values
                 
@@ -166,6 +167,11 @@ storeApp.getProduct = (id) => {
             return item;
         }
     } );
+}
+
+// Save cart
+storeApp.saveCart = (cart) => {
+    localStorage.setItem('cart', JSON.stringify(cart));
 }
 
 storeApp.init = () => {    
