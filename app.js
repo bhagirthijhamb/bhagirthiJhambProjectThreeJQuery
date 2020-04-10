@@ -149,6 +149,7 @@ storeApp.getAddToCartButtons = () => {
                 storeApp.saveCart(cart);             
 
                 // Set cart Values
+                storeApp.setCartValues(cart);
                 
                 // display cart item
 
@@ -172,6 +173,19 @@ storeApp.getProduct = (id) => {
 // Save cart
 storeApp.saveCart = (cart) => {
     localStorage.setItem('cart', JSON.stringify(cart));
+}
+
+// Set cart Values
+storeApp.setCartValues = (cart) => {
+    let tempTotal = 0;
+    let itemsTotal = 0;
+    cart.map(item => {
+        tempTotal += item.price * item.amount;
+        itemsTotal += item.amount;
+    });
+    $cartTotal.text(`${parseFloat(tempTotal.toFixed(2))}`);
+    $cartItems.text(`${itemsTotal}`);
+    // console.log($cartTotal, $cartItems);
 }
 
 storeApp.init = () => {    
