@@ -154,7 +154,8 @@ storeApp.getAddToCartButtons = () => {
                 // display cart item
                 storeApp.addCartItem(cartItem);
 
-                // show the cart            
+                // show the cart  
+                storeApp.showCart();                        
             })            
         } else {
         // cartItem.amount = cartItem.amount + 1; 
@@ -211,11 +212,19 @@ storeApp.addCartItem = (item) => {
     console.log($cartContent);
 }
 
+// Show Cart
+storeApp.showCart = () => {
+    $cartOverlay.addClass('transparentBcg');
+    $cartDOM.addClass('showCart')
+}
+
+// App init
 storeApp.init = () => {    
     storeApp.displayProducts(storeApp.Inventory);
     storeApp.getAddToCartButtons();
 }
 
+// Document Ready
 $(function(){
     storeApp.init();
 }); 
