@@ -152,6 +152,7 @@ storeApp.getAddToCartButtons = () => {
                 storeApp.setCartValues(cart);
                 
                 // display cart item
+                storeApp.addCartItem(cartItem);
 
                 // show the cart            
             })            
@@ -186,6 +187,28 @@ storeApp.setCartValues = (cart) => {
     $cartTotal.text(`${parseFloat(tempTotal.toFixed(2))}`);
     $cartItems.text(`${itemsTotal}`);
     // console.log($cartTotal, $cartItems);
+}
+
+// Display Cart Item
+storeApp.addCartItem = (item) => {
+    const div = $('<div></div>');
+    div.addClass('cartItem');
+    div.html(`
+        <img src=${item.url} alt=${item.title.split(' ').join('-')}>
+        <div>
+            <h4>${item.title}</h4>
+            <h5>$${item.price}</h5>
+            <span class="removeItem" data-id=${item.id}>remove</span>
+        </div>
+        <div>
+            <i class="fas fa-chevron-up" data-id=${item.id}></i>
+            <p class="itemAmount">${item.amount}</p>
+            <i class="fas fa-chevron-down" data-id=${item.id}></i>
+        </div>
+    `);
+
+    $cartContent.append(div);
+    console.log($cartContent);
 }
 
 storeApp.init = () => {    
