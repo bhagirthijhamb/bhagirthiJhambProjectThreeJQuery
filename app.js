@@ -209,7 +209,7 @@ storeApp.addCartItem = (item) => {
     `);
 
     $cartContent.append(div);
-    console.log($cartContent);
+    // console.log($cartContent);
 }
 
 // Show Cart
@@ -218,8 +218,34 @@ storeApp.showCart = () => {
     $cartDOM.addClass('showCart')
 }
 
+storeApp.hideCart = () => {
+    $cartOverlay.removeClass('transparentBcg');
+    $cartDOM.removeClass('showCart')
+}
+
+
+// Setup App
+storeApp.setupApp = () => {
+    cart = storeApp.getCart();
+    storeApp.setCartValues(cart);
+    storeApp.populateCart(cart);
+    $cartBtn.on('click', storeApp.showCart);
+    $closeCartBtn.on('click', storeApp.hideCart);
+}
+
+// Get cart from local storage
+storeApp.getCart = () => {
+    return localStorage.getItem('cart') ? JSON.parse(localStorage.getItem('cart')) : [];
+}
+
+// Populate Cart
+storeApp.populateCart = (cart) => {
+    cart.forEach(item => storeApp.addCartItem(item));
+}
+
 // App init
 storeApp.init = () => {    
+    storeApp.setupApp();
     storeApp.displayProducts(storeApp.Inventory);
     storeApp.getAddToCartButtons();
 }
