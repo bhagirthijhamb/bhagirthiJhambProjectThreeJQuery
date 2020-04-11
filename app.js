@@ -125,6 +125,8 @@ storeApp.getAddToCartButtons = () => {
     const buttons = [...$('.bagBtn')]; // Arrau of all the buttons
     // console.log(buttons);
 
+    buttonsDOM = buttons;
+
     //  get id for the buttons
     buttons.forEach(button => {
         let id = button.dataset.id;
@@ -223,6 +225,83 @@ storeApp.hideCart = () => {
     $cartDOM.removeClass('showCart')
 }
 
+storeApp.cartLogic = () => {
+    $clearCartBtn.on('click', () => {
+        storeApp.clearCart();
+    })
+
+    // Cart Functionality
+    $cartContent.on('click', (event) => {
+        if($(event.target).hasClass('removeItem')){
+            let removeItem = event.target;
+            let $removeItem = $(event.target);
+            let id = Number(removeItem.dataset.id);
+            
+            $cartContent.children().find($removeItem).parent().parent().remove();
+
+            storeApp.removeItem(id);
+        }
+        else if ($(event.target).hasClass('fa-chevron-up')) {
+            let addAmount = event.target;
+            let $addAmount = $(event.target);
+            // console.log(addAmount);
+            let id = Number(addAmount.dataset.id);
+            // console.log(id);
+
+            let tempItem = cart.find(item => item.id === id);
+            tempItem.amount = tempItem.amount + 1;
+            storeApp.saveCart(cart);
+            storeApp.setCartValues(cart);
+            $addAmount.next().text(`${tempItem.amount}`);
+        }
+        else if ($(event.target).hasClass('fa-chevron-down')) {
+            let lowerAmount = event.target;
+            let $lowerAmount = $(event.target);
+            // console.log(lowerAmount);
+            let id = Number(lowerAmount.dataset.id);
+            // console.log(id);
+
+            let tempItem = cart.find(item => item.id === id);
+            tempItem.amount = tempItem.amount - 1;
+            if (tempItem.amount > 0) {
+                storeApp.saveCart(cart);
+                storeApp.setCartValues(cart);
+                $lowerAmount.prev().text(`${tempItem.amount}`);
+            } else {
+                $cartContent.children().find($lowerAmount).parent().parent().remove();
+                storeApp.removeItem(id);
+            }
+        }
+    });
+}
+
+storeApp.clearCart = () => {
+    let cartItems = cart.map(item => item.id);
+
+    cartItems.forEach(id => storeApp.removeItem(id));
+    // console.log($cartContent.children());
+
+    //Remove items from the DOM
+    while($cartContent.children().length > 0){
+        $cartContent.children()[0].remove();
+        // console.log($cartContent.children());
+    }
+    storeApp.hideCart();
+}
+
+storeApp.removeItem = (id) => {
+    cart = cart.filter(item => item.id !== id);
+    storeApp.setCartValues(cart);
+    storeApp.saveCart(cart);
+    let button = storeApp.getSingleButton(id);
+    button.disabled = false;
+    button.innerHTML = `<i class="fas fa-shopping-cart"></i> Add to cart`;
+}
+
+storeApp.getSingleButton = (id) => {
+    return buttonsDOM.find(button => button.dataset.id == id);
+}
+
 
 // Setup App
 storeApp.setupApp = () => {
@@ -248,6 +327,7 @@ storeApp.init = () => {
     storeApp.setupApp();
     storeApp.displayProducts(storeApp.Inventory);
     storeApp.getAddToCartButtons();
+    storeApp.cartLogic();
 }
 
 // Document Ready
