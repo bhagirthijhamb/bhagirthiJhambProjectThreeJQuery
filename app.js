@@ -1,3 +1,4 @@
+// Namespace Object
 const storeApp = {};
 
 // Cart
@@ -17,6 +18,7 @@ const $cartDOM = $('.cart');
 const $cartOverlay = $('.cartOverlay');
 const $cartContent = $('.cartContent');
 
+// Store Inventory
 storeApp.Inventory = [
     {
         id: 1,
@@ -98,6 +100,7 @@ storeApp.Inventory = [
     }
 ]
 
+// Display Products
 storeApp.displayProducts = (inventory) =>  {
     let result = '';
     inventory.forEach((item) => {
@@ -107,7 +110,7 @@ storeApp.displayProducts = (inventory) =>  {
             <div class="imgContainer">
                 <img src=${item.url} alt=${item.title.split(' ').join('-')} class="productImg">
                 <button class="bagBtn" data-id=${item.id}>
-                    <i class="fas fa-shopping-cart">Add to cart</i>
+                    <i class="fas fa-shopping-cart" data-id=${item.id}>Add to cart</i>
                 </button>
             </div>
             <h3>${item.title}</h3>
@@ -116,80 +119,7 @@ storeApp.displayProducts = (inventory) =>  {
             <!-- end of single product -->
         `;
     });
-
     $productsDOM.html(result);
-}
-
-// Get Add to Cart Buttons
-storeApp.getAddToCartButtons = () => {
-    const buttons = [...$('.bagBtn')]; // Arrau of all the buttons
-    // console.log(buttons);
-
-    buttonsDOM = buttons;
-
-    //  get id for the buttons
-    buttons.forEach(button => {
-        let id = button.dataset.id;
-        
-        // check for the item in the cart
-        let inCart = cart.find(item => item.id === id);
-        if(!inCart){
-            button.addEventListener('click', (event) => {
-                $(event.target).text('In Cart');
-                event.target.disabled = true;
-
-                // get product from the inventory based on id
-                let cartItem = storeApp.getProduct(id);
-                cartItem = { ...storeApp.getProduct(id), amount: 1 };
-                console.log(cartItem);
-
-                // Add product to the cart  
-                cart = [...cart, cartItem];
-                console.log(cart);
-
-                // Save cart in local storage   
-                storeApp.saveCart(cart);             
-
-                // Set cart Values
-                storeApp.setCartValues(cart);
-                
-                // display cart item
-                storeApp.addCartItem(cartItem);
-
-                // show the cart  
-                storeApp.showCart();                        
-            })            
-        } else {
-        // cartItem.amount = cartItem.amount + 1; 
-        }       
-    })
-}
-
-// Get the products from Inventory
-storeApp.getProduct = (id) => {
-    return storeApp.Inventory.find(function(item){
-        if(item.id === Number(id)){
-            return item;
-        }
-    } );
-}
-
-// Save cart
-storeApp.saveCart = (cart) => {
-    localStorage.setItem('cart', JSON.stringify(cart));
-}
-
-// Set cart Values
-storeApp.setCartValues = (cart) => {
-    let tempTotal = 0;
-    let itemsTotal = 0;
-    cart.map(item => {
-        tempTotal += item.price * item.amount;
-        itemsTotal += item.amount;
-    });
-    $cartTotal.text(`${parseFloat(tempTotal.toFixed(2))}`);
-    $cartItems.text(`${itemsTotal}`);
-    // console.log($cartTotal, $cartItems);
 }
 
 // Display Cart Item
@@ -209,9 +139,54 @@ storeApp.addCartItem = (item) => {
             <i class="fas fa-chevron-down" data-id=${item.id}></i>
         </div>
     `);
-
     $cartContent.append(div);
-    // console.log($cartContent);
+}
+
+// Get the products from Inventory
+storeApp.getProduct = (id) => {
+    return storeApp.Inventory.find(function (item) {
+        if (item.id === Number(id)) {
+            return item;
+        }
+    });
+}
+
+// Get Add to Cart Buttons
+storeApp.getAddToCartButtons = () => {
+    const buttons = [...$('.bagBtn')];
+    buttonsDOM = buttons;
+
+    // Get id for the buttons
+    buttons.forEach(button => {
+        let btnId = button.dataset.id;       
+        // check for the item in the cart
+        let inCart = cart.find(item => item.id == btnId);
+        
+        // If the item is in the cart
+        if(inCart){
+            button.innerText = 'In Cart';
+            button.disabled = true;
+        }
+        // If item is not in the cart
+        button.addEventListener('click', (event) => {
+            $(event.target).text('In Cart');
+            event.target.disabled = true;
+            let id = event.target.dataset.id;            
+            // get product from the inventory based on id
+            let cartItem = storeApp.getProduct(id);
+            cartItem = { ...storeApp.getProduct(id), amount: 1 };
+            // Add product to the cart  
+            cart = [...cart, cartItem];
+            // Save cart in local storage   
+            storeApp.saveCart(cart);        
+            // Set cart Values
+            storeApp.setCartValues(cart);            
+            // display cart item
+            storeApp.addCartItem(cartItem);
+            // show the cart  
+            storeApp.showCart();                        
+        })                          
+    })
 }
 
 // Show Cart
@@ -220,11 +195,40 @@ storeApp.showCart = () => {
     $cartDOM.addClass('showCart')
 }
 
+// Hide Cart
 storeApp.hideCart = () => {
     $cartOverlay.removeClass('transparentBcg');
     $cartDOM.removeClass('showCart')
 }
 
+// Save cart to Local Storage
+storeApp.saveCart = (cart) => {
+    localStorage.setItem('cart', JSON.stringify(cart));
+}
+
+// Get cart from local storage
+storeApp.getCart = () => {
+    return localStorage.getItem('cart') ? JSON.parse(localStorage.getItem('cart')) : [];
+}
+
+// Populate Cart
+storeApp.populateCart = (cart) => {
+    cart.forEach(item => storeApp.addCartItem(item));
+}
+
+// Set cart Values
+storeApp.setCartValues = (cart) => {
+    let tempTotal = 0;
+    let itemsTotal = 0;
+    cart.map(item => {
+        tempTotal += item.price * item.amount;
+        itemsTotal += item.amount;
+    });
+    $cartTotal.text(`${parseFloat(tempTotal.toFixed(2))}`);
+    $cartItems.text(`${itemsTotal}`);
+}
+
+// Cart Logic
 storeApp.cartLogic = () => {
     $clearCartBtn.on('click', () => {
         storeApp.clearCart();
@@ -244,9 +248,7 @@ storeApp.cartLogic = () => {
         else if ($(event.target).hasClass('fa-chevron-up')) {
             let addAmount = event.target;
             let $addAmount = $(event.target);
-            // console.log(addAmount);
             let id = Number(addAmount.dataset.id);
-            // console.log(id);
 
             let tempItem = cart.find(item => item.id === id);
             tempItem.amount = tempItem.amount + 1;
@@ -257,9 +259,7 @@ storeApp.cartLogic = () => {
         else if ($(event.target).hasClass('fa-chevron-down')) {
             let lowerAmount = event.target;
             let $lowerAmount = $(event.target);
-            // console.log(lowerAmount);
             let id = Number(lowerAmount.dataset.id);
-            // console.log(id);
 
             let tempItem = cart.find(item => item.id === id);
             tempItem.amount = tempItem.amount - 1;
@@ -275,20 +275,19 @@ storeApp.cartLogic = () => {
     });
 }
 
+// Clear Cart
 storeApp.clearCart = () => {
     let cartItems = cart.map(item => item.id);
-
     cartItems.forEach(id => storeApp.removeItem(id));
-    // console.log($cartContent.children());
 
     //Remove items from the DOM
     while($cartContent.children().length > 0){
         $cartContent.children()[0].remove();
-        // console.log($cartContent.children());
     }
     storeApp.hideCart();
 }
 
+// Remove item from the cart
 storeApp.removeItem = (id) => {
     cart = cart.filter(item => item.id !== id);
     storeApp.setCartValues(cart);
@@ -298,10 +297,10 @@ storeApp.removeItem = (id) => {
     button.innerHTML = `<i class="fas fa-shopping-cart"></i> Add to cart`;
 }
 
+// Get button
 storeApp.getSingleButton = (id) => {
     return buttonsDOM.find(button => button.dataset.id == id);
 }
-
 
 // Setup App
 storeApp.setupApp = () => {
@@ -310,16 +309,6 @@ storeApp.setupApp = () => {
     storeApp.populateCart(cart);
     $cartBtn.on('click', storeApp.showCart);
     $closeCartBtn.on('click', storeApp.hideCart);
-}
-
-// Get cart from local storage
-storeApp.getCart = () => {
-    return localStorage.getItem('cart') ? JSON.parse(localStorage.getItem('cart')) : [];
-}
-
-// Populate Cart
-storeApp.populateCart = (cart) => {
-    cart.forEach(item => storeApp.addCartItem(item));
 }
 
 // App init
