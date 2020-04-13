@@ -348,6 +348,12 @@ h1, h2, h3 {
   margin-bottom: 1.5rem;
 }
 
+.hero .banner .bannerBtn a {
+  text-decoration: none;
+  text-transform: uppercase;
+  color: var(--mainBlack);
+}
+
 .hero .banner .bannerBtn:hover {
   background: transparent;
   color: var(--primaryColor);

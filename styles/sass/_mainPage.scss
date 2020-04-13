@@ -63,7 +63,11 @@
             margin-bottom: 1.5rem;
         }
 
-       
+        & .bannerBtn a {
+          text-decoration: none;
+          text-transform: uppercase;
+          color: var(--mainBlack);
+        }
 
         & .bannerBtn:hover {
             background: transparent;
