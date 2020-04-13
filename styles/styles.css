@@ -462,6 +462,18 @@ h1, h2, h3 {
 }
 
 /* ---------------End of Products ---------------- */
+/*----------Footer-------------*/
+footer {
+  background: var(--primaryColor);
+  padding: .7rem 0;
+  text-align: center;
+}
+
+footer span {
+  font-weight: bold;
+}
+
+/*------------- End of Footer-------------*/
 /* --------------- Cart ---------------- */
 .cartOverlay {
   position: fixed;

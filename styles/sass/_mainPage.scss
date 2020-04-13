@@ -170,14 +170,16 @@
 .bagBtn:hover {
   color: var(--mainWhite);
 }
-
-
-
-
-
-
-
-
-
-
 /* ---------------End of Products ---------------- */
+
+/*----------Footer-------------*/
+footer {
+  background: var(--primaryColor);
+  padding: .7rem 0;
+  text-align: center;
+
+  & span {
+    font-weight: bold;
+  }
+}
+/*------------- End of Footer-------------*/
